@@ -52,3 +52,65 @@ const server = app.listen(3000, function () {
 
     console.log('Example app listening at http://%s:%s', host, port);
 })
+
+//mysql连接
+const mysql =require('mysql');
+const connection =mysql.createConnection({
+    host:'locahost',
+    user:'node',
+    password:'111111',
+    multipleStatements:true
+});
+//查询出所有数据
+app.get('/api/getlist', (req, res) => {
+    const sqlStr = 'select * from websites '
+    conn.query(sqlStr, (err, results) => {
+        if (err) return res.json({
+            err_code: 1,
+            message: '数据不存在',
+            affextedRows: 0
+        })
+        res.json({
+            err_code: 200,
+            message: results,
+            affextedRows: results.affextedRows
+        })
+    })
+});
+//查询数据
+app.get('/api/getlistdetl', (req, res) => {
+    const number = req.query.number
+    console.log(req.query)
+    const sqlStr = 'select * from websites where alexa=?'
+    conn.query(sqlStr, number, (err, results) => {
+        if (err) return res.json({
+            err_code: 1,
+            message: '数据不存在',
+            affextedRows: 0
+        })
+        res.json({
+            err_code: 200,
+            message: results,
+            affextedRows: results.affextedRows
+        })
+    })
+});
+//添加
+
+app.post('/api/addcard', (req, res) => {
+    const user = req.body
+    const sqlStr = 'insert into websites set ?'
+    conn.query(sqlStr, user, (err, results) => {
+        if (err) return res.json({
+            err_code: 1,
+            message: err,
+            affectedRows: 0
+        })
+        res.json({
+            err_code: 0,
+            message: '恭喜成功',
+            affectedRows: results.affectedRows
+        })
+    })
+
+})
